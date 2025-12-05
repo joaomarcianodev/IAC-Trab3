@@ -1,0 +1,4 @@
+.temp
+block-music/.venv
+__pycache__/
+*.pyc
