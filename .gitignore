@@ -2,3 +2,4 @@
 block-music/.venv
 __pycache__/
 *.pyc
+block-music-api/.venv
