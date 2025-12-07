@@ -1,53 +1,88 @@
-# IAC-Trab3
+> Trabalho 3 de Inteligência Artificial e Computacional - João Augusto Marciano Silva
 
-Trabalho 3 de Inteligência Artificial e Computacional
+# 🎵 IA Análise de Músicas - GUIA DE EXECUÇÃO RÁPIDA
 
-========================================================================
-IA Análise de Músicas - GUIA DE EXECUÇÃO RÁPIDA
-========================================================================
+Sistema de detecção de ofensas em áudio utilizando OpenAI Whisper
+(transcrição), BERT (análise de sentimento) e Llama 3.2 (análise
+contextual via Ollama).
 
-1. PRÉ-REQUISITOS DO SISTEMA
+------------------------------------------------------------------------
 
----
+📋 Pré-requisitos do Sistema
 
-[ ] Python 3.10 ou superior instalado.
-[ ] FFmpeg instalado e adicionado ao PATH do Windows (Obrigatório para o Whisper).
--> Teste no terminal: ffmpeg -version
-[ ] Ollama instalado (https://ollama.com).
+Antes de iniciar, certifique-se de ter instalado:
 
-2. CONFIGURAÇÃO DE AMBIENTE
+1.  Python 3.10+
+2.  FFmpeg (Obrigatório para processamento de áudio)
+    -   Windows: Baixe, extraia e adicione a pasta bin ao PATH do sistema.
+    -   ou rode no PowerShell: winget install Gyan.FFmpeg
+    -   Teste: Abra o terminal e digite ffmpeg -version.
+3.  Ollama (Para rodar a IA Llama 3.2)
+    -   Download em: ollama.com
 
----
+------------------------------------------------------------------------
 
-1. Crie e ative um ambiente virtual (Recomendado):
-   python -m venv .venv
-   .\.venv\Scripts\Activate (Windows PowerShell)
+🚀 Instalação e Configuração
 
-2. Instale as dependências Python:
-   pip install -r requirements.txt
+1. Configurar Ambiente Virtual
 
-3. Prepare o Modelo Llama (Ollama):
-   Abra o terminal e execute:
-   ollama pull llama3.2
+Recomendado para isolar as dependências do projeto.
 
-4. EXECUÇÃO
+    # Criar a venv
+    python -m venv .venv
 
----
+    # Ativar a venv (Windows PowerShell)
+    .\.venv\Scripts\Activate
 
-Passo 1: Garanta que o Ollama esteja rodando em segundo plano.
-(Geralmente ele inicia com o Windows, ou rode `ollama serve`).
+    # Ativar a venv (Linux/Mac)
+    source .venv/bin/activate
 
-Passo 2: Inicie o servidor da aplicação:
-uvicorn main:app --reload
+2. Instalar Dependências
 
-Passo 3: Acesse no navegador:
+         pip install -r requirements.txt
+
+3. Preparar a IA (Ollama)
+
+Com o Ollama instalado, baixe o modelo Llama 3.2 (3B):
+
+    ollama pull llama3.2
+
+------------------------------------------------------------------------
+
+▶️ Como Executar
+
+Inicie o Ollama
+
+Certifique-se de que o aplicativo Ollama está rodando em segundo plano
+ou execute:
+
+    ollama serve
+
+Rode a Aplicação
+
+    uvicorn main:app --reload
+
+Acesse
+
 http://127.0.0.1:8000
 
-========================================================================
-NOTAS DE TROUBLESHOOTING:
+------------------------------------------------------------------------
 
-- Erro "FileNotFoundError" no Whisper: Você não instalou o FFmpeg.
-- Erro de Conexão Llama: O aplicativo Ollama não está rodando.
-- Erro de Memória (CUDA): Se tiver GPU NVIDIA, instale o PyTorch com suporte CUDA.
-  Caso contrário, o sistema rodará na CPU (mais lento, mas funcional).
-  ========================================================================
+🛠️ Troubleshooting (Problemas Comuns)
+
+Tabela de Erros e Soluções
+
+|Erro|Solução Provável|
+|:---:|:---:|
+|FileNotFoundError [WinError 2]|O FFmpeg não está instalado ou não está no PATH.|
+|ConnectionRefusedError [Ollama]|O Ollama não está rodando. Abra o app ou execute ollama serve|
+|ImportError [transforms]|A biblioteca não foi instalada. Rode pip install -r requirements.txt|
+
+------------------------------------------------------------------------
+
+📦 Stack Tecnológica
+
+-   Backend: FastAPI, Uvicorn
+-   IA/ML: PyTorch, OpenAI Whisper, HuggingFace Transformers
+-   LLM: Llama 3.2 (via Ollama)
+-   Frontend: HTML5, Bootstrap 5, Jinja2
