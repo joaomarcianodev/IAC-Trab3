@@ -1,0 +1,260 @@
+/* =========================================
+   ESTILOS GERAIS E BOOTSTRAP OVERRIDES
+   ========================================= */
+body {
+  background-color: #f8f9fa;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+a {
+  text-decoration: none;
+}
+
+/* =========================================
+   CONTAINER PRINCIPAL
+   ========================================= */
+.main-container {
+  max-width: 900px;
+  margin: 40px auto;
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* =========================================
+   ÁREA DE UPLOAD
+   ========================================= */
+.upload-box {
+  border: 2px dashed #dee2e6;
+  padding: 30px;
+  text-align: center;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #fcfcfc;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.upload-box:hover {
+  background-color: #e9ecef;
+  border-color: #0d6efd;
+}
+
+/* =========================================
+   CONFIGURAÇÕES (CAIXAS CINZAS)
+   ========================================= */
+.config-section {
+  background-color: #f1f3f5;
+  padding: 20px;
+  border-radius: 8px;
+  height: 100%;
+}
+
+/* =========================================
+   CONSOLE DE LOGS (PRETO)
+   ========================================= */
+.logs-console {
+  background: #212529;
+  color: #00ff9d;
+  padding: 15px;
+  border-radius: 6px;
+  font-family: "Consolas", monospace;
+  font-size: 12px;
+  height: 150px;
+  overflow-y: auto;
+  margin-top: 20px;
+  border: 1px solid #343a40;
+}
+
+.log-line {
+  margin-bottom: 2px;
+  border-bottom: 1px solid #333;
+  padding-bottom: 2px;
+}
+
+/* =========================================
+   TIMER E BOTÕES
+   ========================================= */
+.timer-display {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #fd7e14;
+  margin: 15px 0;
+  display: none; /* Começa oculto */
+}
+
+/* =========================================
+   RESULTADOS E MÉTRICAS
+   ========================================= */
+.metric-card {
+  background: #e6fcf5;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+  border: 1px solid #c3fae8;
+  height: 100%;
+}
+
+.metric-value {
+  display: block;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #0ca678;
+}
+
+.metric-label {
+  font-size: 0.7rem;
+  color: #636e72;
+  text-transform: uppercase;
+}
+
+/* =========================================
+   VEREDITO (OFENSIVO/SEGURO)
+   ========================================= */
+.veredito-card {
+  padding: 15px;
+  text-align: center;
+  border-radius: 8px;
+  color: white;
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+}
+
+.safe {
+  background-color: #20c997; /* Verde */
+}
+
+.unsafe {
+  background-color: #fa5252; /* Vermelho */
+}
+
+/* =========================================
+   TRANSCRIÇÃO E DESTAQUES
+   ========================================= */
+.transcription-box {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  white-space: pre-wrap;
+  max-height: 250px;
+  overflow-y: auto;
+  border: 1px solid #dee2e6;
+}
+
+/* Destaque Vermelho (Palavras Proibidas) */
+.highlight-bad {
+  background-color: #ffc9c9;
+  color: #c92a2a;
+  font-weight: bold;
+  padding: 0 2px;
+  border-radius: 2px;
+  border-bottom: 2px solid #c92a2a;
+}
+
+/* Destaque Amarelo/Laranja (Contexto da IA) */
+.highlight-context {
+  background-color: #ffec99;
+  color: #e67700;
+  font-weight: bold;
+  padding: 0 2px;
+  border-radius: 2px;
+  border-bottom: 2px solid #e67700;
+}
+
+/* =========================================
+   HISTÓRICO
+   ========================================= */
+.history-item {
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border-left: 4px solid transparent;
+}
+
+.history-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  border-color: #0d6efd !important;
+}
+
+/* =========================================
+   ESTILOS DO MODAL DE CONTATO (SOBRE MIM)
+   ========================================= */
+
+/* Foto de Perfil Redonda */
+.profile-pic {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%; /* Faz a foto ficar redonda */
+  object-fit: cover; /* Garante que a foto não estique */
+  border: 4px solid white;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Caixa de Email */
+.email-box {
+  background-color: #f8f9fa;
+  padding: 8px 15px;
+  border-radius: 50px; /* Borda arredondada estilo "Pílula" */
+  border: 1px solid #e9ecef;
+  transition: all 0.2s;
+  font-size: 0.95rem;
+  display: inline-block;
+}
+
+.email-box:hover {
+  background-color: #e2e6ea;
+  border-color: #adb5bd;
+  transform: translateY(-1px);
+}
+
+/* Botões Sociais */
+.btn-social {
+  color: white !important;
+  padding: 8px 20px;
+  border-radius: 50px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  border: none;
+}
+
+.btn-social:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  color: white !important;
+}
+
+/* Cores das Redes Sociais */
+.btn-github {
+  background-color: #333;
+}
+
+.btn-linkedin {
+  background-color: #0077b5;
+}
+
+.btn-instagram {
+  background: linear-gradient(
+    45deg,
+    #f09433 0%,
+    #e6683c 25%,
+    #dc2743 50%,
+    #cc2366 75%,
+    #bc1888 100%
+  );
+}
+
+.btn-website {
+  background-color: #0e5c27;
+}

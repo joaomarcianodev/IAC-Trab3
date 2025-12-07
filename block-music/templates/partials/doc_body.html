@@ -1,0 +1,113 @@
+<div class="alert alert-info shadow-sm">
+    <h5 class="alert-heading">🎯 Objetivo do Sistema</h5>
+    <p class="mb-0">Este software utiliza uma arquitetura de pipeline (sequencial) para processar áudio, convertê-lo em texto e aplicar múltiplos modelos de Inteligência Artificial para detectar conteúdo ofensivo, distinguindo <em>sentimento negativo</em> de <em>toxicidade real</em>.</p>
+</div>
+
+<h3 class="mt-5 text-primary">1. O "Ouvido" Digital: OpenAI Whisper</h3>
+<p>O <strong>Whisper</strong> é uma rede neural treinada em 680.000 horas de áudio multilingue da web. Ele não apenas "ouve", mas traduz e pontua o texto com precisão próxima à humana.</p>
+<p><small class="text-muted">🔗 Fonte: <a href="https://github.com/openai/whisper" target="_blank" class="text-decoration-none">OpenAI Whisper (GitHub)</a></small></p>
+
+<div class="card mb-4 border-0 shadow-sm">
+    <div class="card-header bg-light fw-bold">Comparativo de Modelos (Tamanho vs. Performance)</div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Modelo</th>
+                        <th>Parâmetros (Neurônios)</th>
+                        <th>VRAM/RAM Necessária</th>
+                        <th>Velocidade Relativa</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>Tiny</strong></td><td>39 Milhões</td><td>~1 GB</td><td>~32x Faster</td></tr>
+                    <tr><td><strong>Base</strong></td><td>74 Milhões</td><td>~1 GB</td><td>~16x Faster</td></tr>
+                    <tr><td><strong>Small</strong></td><td>244 Milhões</td><td>~2 GB</td><td>~6x Faster</td></tr>
+                    <tr><td><strong>Medium</strong></td><td>769 Milhões</td><td>~5 GB</td><td>~2x Faster</td></tr>
+                    <tr><td><strong>Large</strong></td><td>1550 Milhões</td><td>~10 GB</td><td>1x (Referência)</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer text-muted small">
+        * Dados de Parâmetros e RAM baseados na documentação oficial da OpenAI. Modelos maiores exigem mais hardware, mas oferecem maior precisão em PT-BR.
+    </div>
+</div>
+
+<h3 class="mt-5 text-primary">2. O Classificador: BERT</h3>
+<p><strong>Sigla:</strong> Bidirectional Encoder Representations from Transformers.</p>
+<p>O BERT, introduzido pelo Google em 2018, revolucionou a IA. Diferente de modelos antigos, o BERT é <strong>Bidirecional</strong>: ele lê a frase inteira de uma vez (olhando para a esquerda e direita) para entender o contexto de cada palavra.</p>
+<p><small class="text-muted">🔗 Fonte: <a href="https://huggingface.co/nlptown/bert-base-multilingual-uncased-sentiment" target="_blank" class="text-decoration-none">nlptown/bert-base (Hugging Face)</a></small></p>
+
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card h-100 bg-light border-success">
+            <div class="card-body">
+                <h5 class="card-title text-success">Como o BERT aprendeu?</h5>
+                <p>Ele foi treinado brincando de <strong>"Preencha a Lacuna"</strong> (Masked Language Modeling).</p>
+                <hr>
+                <h6>Exemplo:</h6>
+                <p class="mb-1">Frase: <em>"O [MÁSCARA] latiu alto no quintal."</em></p>
+                <p class="text-muted small">🧠 O BERT analisa "latiu" e "quintal" simultaneamente e conclui que a palavra oculta é <strong>"cachorro"</strong>.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header fw-bold">Limitações do BERT</div>
+            <div class="card-body">
+                <p>Por ser focado em estatística de palavras, ele pode falhar em ironia.</p>
+                <div class="alert alert-warning py-2 small">
+                    <em>"Nossa, você é um gênio, conseguiu quebrar tudo!"</em><br>
+                    <strong>BERT:</strong> Vê "gênio" e classifica como <strong>Positivo</strong> (estatisticamente "gênio" é bom).
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h3 class="mt-5 text-primary">3. O Cérebro Generativo: Llama 3.2 via Ollama</h3>
+<p>Para resolver as limitações do BERT, utilizamos o Llama 3.2, uma <strong>SLM (Small Language Model)</strong> da Meta AI, executada localmente através do Ollama.</p>
+<p><small class="text-muted">🔗 Fontes: <a href="https://ollama.com/" target="_blank" class="text-decoration-none">Ollama Project</a> | <a href="https://llama.meta.com/" target="_blank" class="text-decoration-none">Meta Llama</a></small></p>
+
+<div class="card shadow-sm mt-3">
+    <div class="card-body">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h5>Por que Llama 3.2?</h5>
+                <p>É um modelo com 3 Bilhões de parâmetros que possui <strong>Raciocínio Lógico</strong>. Ele entende que sarcasmo ou gírias podem ser ofensivos ou amigáveis dependendo do contexto.</p>
+                <ul>
+                    <li><strong>Contexto:</strong> Sabe diferenciar brincadeira (em jogos) de ameaça real.</li>
+                    <li><strong>Destaque:</strong> Consegue apontar exatamente quais frases são problemáticas no texto.</li>
+                </ul>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="p-3 bg-dark text-white rounded">
+                    <small>Exemplo de Raciocínio</small><br>
+                    <em>"Você é um monstro!"</em>
+                    <hr style="margin: 5px 0; border-color: #555;">
+                    <div class="text-start small">
+                        <span style="color:#ff6b6b">BERT:</span> Negativo (Estatístico).<br>
+                        <span style="color:#4ecdc4">Llama:</span> Depende do contexto (Elogio de habilidade vs. Ofensa de caráter).
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h3 class="mt-5 text-primary">⚙️ Fluxo de Processamento</h3>
+<div class="d-flex justify-content-between flex-wrap text-center gap-2 mb-4">
+    <div class="p-3 border rounded bg-light flex-fill">🎤 <strong>Input</strong><br><small>Áudio</small></div>
+    <div class="align-self-center">➜</div>
+    <div class="p-3 border rounded bg-light flex-fill">🗣️ <strong>Whisper</strong><br><small>Áudio to Text</small></div>
+    <div class="align-self-center">➜</div>
+    <div class="p-3 border rounded bg-info text-white flex-fill">🧠 <strong>IA (Core)</strong><br><small>BERT / Llama</small></div>
+    <div class="align-self-center">➜</div>
+    <div class="p-3 border rounded bg-light flex-fill">📊 <strong>Output</strong><br><small>JSON / UI</small></div>
+</div>
+
+<footer class="mt-5 pt-4 border-top text-center text-muted">
+    <small>Desenvolvido para a disciplina de Inteligência Artificial (IAC-Trab3).</small>
+</footer>
