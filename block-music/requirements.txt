@@ -2,6 +2,8 @@ fastapi
 uvicorn
 python-multipart
 torch
-transformers
 openai-whisper
 numpy
+requests
+jinja2
+transformers
