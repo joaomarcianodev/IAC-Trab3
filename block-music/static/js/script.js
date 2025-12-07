@@ -2,18 +2,19 @@ let abortController = null;
 let logsAcumulados = [];
 let timerInterval, startTime;
 
-// Inicialização
+// Inicializa o histórico e ajusta a UI ao carregar a página
 document.addEventListener("DOMContentLoaded", () => {
   carregarHistorico();
   toggleStrategy();
 });
 
-// UI Helpers
+// Atualiza o nome do arquivo na UI após seleção
 function mostrarNome() {
   const f = document.getElementById("fileInput").files[0];
   if (f) document.getElementById("fileName").innerText = f.name;
 }
 
+// Alterna a visibilidade das opções específicas do BERT/Ollama
 function toggleStrategy() {
   const engine = document.getElementById("engineSelect").value;
   const stratBox = document.getElementById("strategyBox");
@@ -28,43 +29,49 @@ function toggleStrategy() {
   }
 }
 
-// Timer Logic
+// --- Lógica do Cronômetro ---
 function startTimer() {
   document.getElementById("timerDisplay").style.display = "block";
   startTime = Date.now();
   timerInterval = setInterval(() => {
+    // Atualiza a cada 100ms
     document.getElementById("timerDisplay").innerText = `⏱️ ${(
       (Date.now() - startTime) /
       1000
     ).toFixed(1)}s`;
   }, 100);
 }
+
 function stopTimer() {
   clearInterval(timerInterval);
 }
 
-// Logging
+// Adiciona linha ao console de logs visual
 function addLog(msg) {
   const consoleDiv = document.getElementById("logsConsole");
   const line = document.createElement("div");
   line.className = "log-line";
   line.innerText = `> ${msg}`;
   consoleDiv.appendChild(line);
-  consoleDiv.scrollTop = consoleDiv.scrollHeight;
+  consoleDiv.scrollTop = consoleDiv.scrollHeight; // Auto-scroll
   logsAcumulados.push(msg);
 }
 
-// Processamento
+// --- Controle de Requisição e Cancelamento ---
+
 function cancelarRequisicao() {
   if (abortController) {
+    // Envia sinal de aborto para o fetch API
     abortController.abort();
     abortController = null;
     addLog("!!! CANCELADO PELO USUÁRIO !!!");
     stopTimer();
+    // Inicia espera ativa pela liberação do backend
     aguardarLiberacaoServidor();
   }
 }
 
+// Polling: Verifica periodicamente se o servidor terminou a tarefa cancelada
 async function aguardarLiberacaoServidor() {
   const btn = document.getElementById("btnProcessar");
   const btnCancel = document.getElementById("btnCancelar");
@@ -85,7 +92,7 @@ async function aguardarLiberacaoServidor() {
         resetUI();
       }
     } catch (e) {
-      console.log(e);
+      console.log("Erro no polling de status:", e);
     }
   }, 1000);
 }
@@ -98,6 +105,7 @@ function resetUI() {
   document.getElementById("btnCancelar").style.display = "none";
 }
 
+// --- Função Principal de Envio ---
 async function iniciarAnalise() {
   const fileInput = document.getElementById("fileInput");
   if (!fileInput.files[0]) {
@@ -117,6 +125,7 @@ async function iniciarAnalise() {
   document.getElementById("btnCancelar").style.display = "block";
 
   startTimer();
+  // Cria novo controlador para permitir cancelamento
   abortController = new AbortController();
 
   const formData = new FormData();
@@ -146,6 +155,7 @@ async function iniciarAnalise() {
       return;
     }
 
+    // Leitura do Stream (Server-Sent Events)
     const reader = response.body.getReader();
     const decoder = new TextDecoder("utf-8");
     let buffer = "";
@@ -156,11 +166,12 @@ async function iniciarAnalise() {
 
       buffer += decoder.decode(value, { stream: true });
       const lines = buffer.split("\n");
-      buffer = lines.pop();
+      buffer = lines.pop(); // Mantém o último fragmento incompleto no buffer
 
       for (const line of lines) {
-        if (line.startsWith("LOG:")) addLog(line.substring(4));
-        else if (line.startsWith("RESULT:")) {
+        if (line.startsWith("LOG:")) {
+          addLog(line.substring(4));
+        } else if (line.startsWith("RESULT:")) {
           const data = JSON.parse(line.substring(7));
           stopTimer();
           finalizarProcesso(data, nomeArquivo);
@@ -175,6 +186,8 @@ async function iniciarAnalise() {
     }
   }
 }
+
+// --- Renderização de Resultados ---
 
 function finalizarProcesso(data, nomeArquivo) {
   resetUI();
@@ -198,6 +211,7 @@ function finalizarProcesso(data, nomeArquivo) {
 
 function aplicarDestaque(texto, palavras, frases) {
   let t = texto;
+  // Destaque Laranja (Contexto IA)
   if (frases && frases.length > 0) {
     frases.forEach((frase) => {
       const safeFrase = frase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -205,6 +219,7 @@ function aplicarDestaque(texto, palavras, frases) {
       t = t.replace(regex, '<span class="highlight-context">$1</span>');
     });
   }
+  // Destaque Vermelho (Proibidas)
   if (palavras && palavras.length > 0) {
     palavras.forEach((p) => {
       const regex = new RegExp(`(${p})`, "gi");
@@ -247,7 +262,8 @@ function gerarHtmlResultado(data) {
     `;
 }
 
-// Histórico
+// --- Gerenciamento de Histórico (LocalStorage) ---
+
 function salvarNoHistorico(item) {
   let h = JSON.parse(localStorage.getItem("iaUltHistory") || "[]");
   h.unshift(item);

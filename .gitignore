@@ -1,5 +1,6 @@
 .temp
 block-music/.venv
+block-music/músicas
 __pycache__/
 *.pyc
 block-music-api/.venv
