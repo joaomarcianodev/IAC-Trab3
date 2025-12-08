@@ -6,69 +6,72 @@ Sistema de detecção de ofensas em áudio utilizando OpenAI Whisper
 (transcrição), BERT (análise de sentimento) e Llama 3.2 (análise
 contextual via Ollama).
 
-------------------------------------------------------------------------
 
-📋 Pré-requisitos do Sistema
+## 📋 Pré-requisitos do Sistema
 
 Antes de iniciar, certifique-se de ter instalado:
 
 1.  Python 3.10+
 2.  FFmpeg (Obrigatório para processamento de áudio)
-    -   Windows: Baixe, extraia e adicione a pasta bin ao PATH do sistema.
-    -   ou rode no PowerShell: winget install Gyan.FFmpeg
+    -   Windows: Baixe, extraia e adicione a pasta bin ao PATH do sistema ou rode no PowerShell: ``` winget install Gyan.FFmpeg ```
     -   Teste: Abra o terminal e digite ffmpeg -version.
 3.  Ollama (Para rodar a IA Llama 3.2)
-    -   Download em: ollama.com
+    -   Download em: [ollama.com](https://ollama.com)
 
-------------------------------------------------------------------------
 
-🚀 Instalação e Configuração
+## 🚀 Instalação e Configuração
 
 1. Configurar Ambiente Virtual
 
 Recomendado para isolar as dependências do projeto.
 
-    # Criar a venv
-    python -m venv .venv
+```
+# Criar a venv
+python -m venv .venv
 
-    # Ativar a venv (Windows PowerShell)
-    .\.venv\Scripts\Activate
+# Ativar a venv (Windows PowerShell)
+.\.venv\Scripts\Activate
 
-    # Ativar a venv (Linux/Mac)
-    source .venv/bin/activate
+# Ativar a venv (Linux/Mac)
+source .venv/bin/activate
+```
 
 2. Instalar Dependências
 
-         pip install -r requirements.txt
+```
+pip install -r requirements.txt
+```
 
 3. Preparar a IA (Ollama)
 
 Com o Ollama instalado, baixe o modelo Llama 3.2 (3B):
 
-    ollama pull llama3.2
+```
+ollama pull llama3.2
+```
 
-------------------------------------------------------------------------
 
-▶️ Como Executar
+## ▶️ Como Executar
 
 Inicie o Ollama
 
 Certifique-se de que o aplicativo Ollama está rodando em segundo plano
 ou execute:
 
-    ollama serve
+```
+ollama serve
+```
 
 Rode a Aplicação
 
-    uvicorn main:app --reload
+```
+uvicorn main:app --reload
+```
 
-Acesse
+Acesse [http://127.0.0.1:8000](http://127.0.0.1:8000)
 
-http://127.0.0.1:8000
 
-------------------------------------------------------------------------
-
-🛠️ Troubleshooting (Problemas Comuns)
+## 🛠️ Troubleshooting (Problemas Comuns)
 
 Tabela de Erros e Soluções
 
@@ -78,9 +81,8 @@ Tabela de Erros e Soluções
 |ConnectionRefusedError [Ollama]|O Ollama não está rodando. Abra o app ou execute ollama serve|
 |ImportError [transforms]|A biblioteca não foi instalada. Rode pip install -r requirements.txt|
 
-------------------------------------------------------------------------
 
-📦 Stack Tecnológica
+# 📦 Stack Tecnológica
 
 -   Backend: FastAPI, Uvicorn
 -   IA/ML: PyTorch, OpenAI Whisper, HuggingFace Transformers
