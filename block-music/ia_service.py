@@ -72,67 +72,72 @@ def carregar_bert_dinamico():
 # MOTORES DE ANÁLISE (INTELIGÊNCIA)
 # ==============================================================================
 
-def analisar_com_bert(texto, estrategia):
+import numpy as np
+
+def analisar_com_bert(texto, estrategia='completa'):
     """
-    Realiza a análise usando BERT (Abordagem Estatística/Sentimento).
-    
-    Args:
-        texto (str): O texto transcrito.
-        estrategia (str): 'completa' (média global) ou 'segmentada' (frase a frase).
-        
-    Returns:
-        dict: Contendo veredito, score numérico e detalhes.
+    Realiza a análise usando BERT (Sentimento adaptado para Toxicidade).
+    Configuração: REGUA NEUTRA (0.5)
     """
     bert = carregar_bert_dinamico()
     
     if not texto or len(texto) < 2:
         return {"eh_ofensivo": False, "score": 0, "detalhes": "Texto vazio"}
 
-    # Divide o texto em frases para análise granular
-    frases = re.split(r'[.!?\n]+', str(texto))
-    frases = [f.strip() for f in frases if len(f.strip()) > 5]
-    
-    scores = []
-    frases_criticas = []
+    # Mantemos a leitura em bloco (contexto) para evitar falsos positivos por falta de nexo,
+    # mas limitamos o tamanho para não estourar o modelo.
+    limite_chars = 2000
+    texto_analise = texto[:limite_chars] 
 
-    for frase in frases:
-        try:
-            # O modelo retorna labels como '1 star', '5 stars' etc.
-            res = bert(frase[:512])[0] # Limite de 512 tokens do BERT
-            estrelas = int(res['label'].split()[0])
-            
-            # Mapeamento de Estrelas para Score de Toxicidade (0.0 a 1.0)
-            # 1 estrela = Muito negativo (1.0) | 5 estrelas = Muito positivo (0.0)
-            mapa = {1: 1.0, 2: 0.8, 3: 0.5, 4: 0.2, 5: 0.0}
-            val = mapa.get(estrelas, 0.0)
-            scores.append(val)
-            
-            # Se a frase for muito negativa, guarda como crítica
-            if val >= 0.8: frases_criticas.append(frase)
-        except: continue
+    try:
+        # Pega o resultado bruto do modelo
+        res = bert(texto_analise, truncation=True, max_length=512)[0]
+        
+        # Ex: {'label': '1 star', 'score': 0.98}
+        label = res['label']
+        estrelas = int(label.split()[0])
+        confianca = res['score'] 
+        
+        # --- CALIBRAGEM NEUTRA ---
+        # 1 estrela = 1.0 (Ofensa/Negatividade Máxima)
+        # 2 estrelas = 0.5 (Zona cinzenta/Reclamação)
+        # 3, 4, 5 = 0.0 (Neutro ou Positivo - ignoramos)
+        mapa_toxicidade = {
+            1: 1.0, 
+            2: 0.5, 
+            3: 0.0, 
+            4: 0.0, 
+            5: 0.0  
+        }
+        
+        score_calculado = mapa_toxicidade.get(estrelas, 0.0)
+        
+        # Ajuste de Incerteza:
+        # Se o modelo não tem certeza (confiança < 70%), derrubamos o score pela metade
+        # para evitar condenar o réu em caso de dúvida.
+        if confianca < 0.7:
+            score_calculado = score_calculado * 0.5
 
-    if not scores: return {"eh_ofensivo": False, "score": 0, "detalhes": "N/A"}
+        # A "Régua": Se o score final for MAIOR que 0.5, é considerado ofensivo.
+        # Isso significa que:
+        # - "1 star" com alta confiança (1.0) -> BLOQUEIA
+        # - "2 stars" com alta confiança (0.5) -> NÃO BLOQUEIA (fica no limite)
+        # - "1 star" com baixa confiança (0.5) -> NÃO BLOQUEIA (benefício da dúvida)
+        
+        eh_ofensivo = score_calculado > 0.5
 
-    # Cálculo da média global
-    media = float(np.mean(scores))
-    if math.isnan(media): media = 0.0
-    
-    # Lógica de decisão baseada na estratégia escolhida pelo usuário
-    if estrategia == "segmentada":
-        # Segmentada: Basta uma frase tóxica para condenar o áudio
-        eh_ofensivo = len(frases_criticas) > 0
-        detalhe = f"BERT (Segmentado): Encontradas {len(frases_criticas)} frases críticas."
-    else:
-        # Completa: Baseia-se na média ponderada de todo o texto
-        eh_ofensivo = media > 0.4
-        detalhe = "BERT (Completo): Média global de negatividade."
+        return {
+            "eh_ofensivo": eh_ofensivo,
+            "score": round(score_calculado * 100, 2), # Retorna em porcentagem (0 a 100)
+            "detalhes": f"Classificação: {label} (Confiança: {confianca:.2f})",
+            "frases_criticas": [texto[:100] + "..."] if eh_ofensivo else []
+        }
 
-    return {
-        "eh_ofensivo": eh_ofensivo,
-        "score": round(media * 100, 2),
-        "detalhes": detalhe,
-        "frases_criticas": frases_criticas
-    }
+    except Exception as e:
+        print(f"Erro na análise BERT: {e}")
+        # Em caso de erro, na dúvida, libera (fail-open) ou bloqueia (fail-close)?
+        # Geralmente fail-open (False) é melhor para não travar o sistema.
+        return {"eh_ofensivo": False, "score": 0, "detalhes": "Erro interno"}
 
 def analisar_com_ollama(texto):
     """

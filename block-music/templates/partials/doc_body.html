@@ -3,6 +3,17 @@
     <p class="mb-0">Este software utiliza uma arquitetura de pipeline (sequencial) para processar áudio, convertê-lo em texto e aplicar múltiplos modelos de Inteligência Artificial para detectar conteúdo ofensivo, distinguindo <em>sentimento negativo</em> de <em>toxicidade real</em>.</p>
 </div>
 
+<h3 class="mt-5 text-primary">⚙️ Fluxo de Processamento</h3>
+<div class="d-flex justify-content-between flex-wrap text-center gap-2 mb-4">
+    <div class="p-3 border rounded bg-light flex-fill">🎤 <strong>Input</strong><br><small>Áudio</small></div>
+    <div class="align-self-center">➜</div>
+    <div class="p-3 border rounded bg-light flex-fill">🗣️ <strong>Whisper</strong><br><small>Áudio to Text</small></div>
+    <div class="align-self-center">➜</div>
+    <div class="p-3 border rounded bg-info text-white flex-fill">🧠 <strong>IA (Core)</strong><br><small>BERT / Llama</small></div>
+    <div class="align-self-center">➜</div>
+    <div class="p-3 border rounded bg-light flex-fill">📊 <strong>Output</strong><br><small>JSON / UI</small></div>
+</div>
+
 <h3 class="mt-5 text-primary">1. O "Ouvido" Digital: OpenAI Whisper</h3>
 <p>O <strong>Whisper</strong> é uma rede neural treinada em 680.000 horas de áudio multilingue da web. Ele não apenas "ouve", mas traduz e pontua o texto com precisão próxima à humana.</p>
 <p><small class="text-muted">🔗 Fonte: <a href="https://github.com/openai/whisper" target="_blank" class="text-decoration-none">OpenAI Whisper (GitHub)</a></small></p>
@@ -96,18 +107,3 @@
         </div>
     </div>
 </div>
-
-<h3 class="mt-5 text-primary">⚙️ Fluxo de Processamento</h3>
-<div class="d-flex justify-content-between flex-wrap text-center gap-2 mb-4">
-    <div class="p-3 border rounded bg-light flex-fill">🎤 <strong>Input</strong><br><small>Áudio</small></div>
-    <div class="align-self-center">➜</div>
-    <div class="p-3 border rounded bg-light flex-fill">🗣️ <strong>Whisper</strong><br><small>Áudio to Text</small></div>
-    <div class="align-self-center">➜</div>
-    <div class="p-3 border rounded bg-info text-white flex-fill">🧠 <strong>IA (Core)</strong><br><small>BERT / Llama</small></div>
-    <div class="align-self-center">➜</div>
-    <div class="p-3 border rounded bg-light flex-fill">📊 <strong>Output</strong><br><small>JSON / UI</small></div>
-</div>
-
-<footer class="mt-5 pt-4 border-top text-center text-muted">
-    <small>Desenvolvido para a disciplina de Inteligência Artificial (IAC-Trab3).</small>
-</footer>
