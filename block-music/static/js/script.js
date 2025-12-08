@@ -2,31 +2,15 @@ let abortController = null;
 let logsAcumulados = [];
 let timerInterval, startTime;
 
-// Inicializa o histórico e ajusta a UI ao carregar a página
+// Inicializa o histórico ao carregar a página
 document.addEventListener("DOMContentLoaded", () => {
   carregarHistorico();
-  toggleStrategy();
 });
 
 // Atualiza o nome do arquivo na UI após seleção
 function mostrarNome() {
   const f = document.getElementById("fileInput").files[0];
   if (f) document.getElementById("fileName").innerText = f.name;
-}
-
-// Alterna a visibilidade das opções específicas do BERT/Ollama
-function toggleStrategy() {
-  const engine = document.getElementById("engineSelect").value;
-  const stratBox = document.getElementById("strategyBox");
-  const info = document.getElementById("ollamaInfo");
-
-  if (engine === "ollama") {
-    stratBox.style.display = "none";
-    info.style.display = "block";
-  } else {
-    stratBox.style.display = "block";
-    info.style.display = "none";
-  }
 }
 
 // --- Lógica do Cronômetro ---
@@ -136,10 +120,6 @@ async function iniciarAnalise() {
     document.getElementById("badWordsInput").value
   );
   formData.append("motor", engine);
-  formData.append(
-    "estrategia",
-    document.querySelector('input[name="strategy"]:checked').value
-  );
 
   try {
     const response = await fetch("/analisar", {
@@ -193,6 +173,7 @@ function finalizarProcesso(data, nomeArquivo) {
   resetUI();
   if (!data.sucesso) {
     addLog("ERRO NO BACKEND: " + data.erro);
+    alert("Ocorreu um erro no processamento: " + data.erro);
     return;
   }
 
@@ -207,6 +188,15 @@ function finalizarProcesso(data, nomeArquivo) {
     modelo: data.metricas.modelo_usado,
     resultado: data,
   });
+
+  // ALERT SOLICITADO
+  // Timeout pequeno para permitir que a UI atualize antes do alert travar a tela
+  setTimeout(() => {
+    const veredito = data.analise.eh_ofensivo
+      ? "⚠️ CONTEÚDO OFENSIVO DETECTADO!"
+      : "✅ Conteúdo Seguro.";
+    alert(`Análise Concluída!\n\nResultado: ${veredito}`);
+  }, 100);
 }
 
 function aplicarDestaque(texto, palavras, frases) {
@@ -214,9 +204,11 @@ function aplicarDestaque(texto, palavras, frases) {
   // Destaque Laranja (Contexto IA)
   if (frases && frases.length > 0) {
     frases.forEach((frase) => {
-      const safeFrase = frase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      const regex = new RegExp(`(${safeFrase})`, "gi");
-      t = t.replace(regex, '<span class="highlight-context">$1</span>');
+      if (frase.length > 0) {
+        const safeFrase = frase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        const regex = new RegExp(`(${safeFrase})`, "gi");
+        t = t.replace(regex, '<span class="highlight-context">$1</span>');
+      }
     });
   }
   // Destaque Vermelho (Proibidas)
@@ -242,7 +234,7 @@ function gerarHtmlResultado(data) {
   );
 
   let detalhes = "";
-  if (a.motivo_palavras.length)
+  if (a.motivo_palavras && a.motivo_palavras.length)
     detalhes += `<div>🛑 <strong>Palavras Proibidas:</strong> ${a.motivo_palavras.join(
       ", "
     )}</div>`;
