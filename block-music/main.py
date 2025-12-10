@@ -47,8 +47,7 @@ async def analisar(
     arquivo: UploadFile = File(...),
     modelo: str = Form("base"),
     palavras_proibidas: str = Form(""),
-    motor: str = Form("bert"),      
-    estrategia: str = Form("completa") 
+    motor: str = Form("bert")
 ):
     """
     Endpoint principal de processamento.
@@ -74,7 +73,7 @@ async def analisar(
             ESTADO_SERVIDOR["ocupado"] = True # Bloqueia novos acessos
             
             # Delega o processamento pesado para o serviço de IA
-            for chunk in processar_audio_stream(temp_filename, modelo, palavras_proibidas, motor, estrategia):
+            for chunk in processar_audio_stream(temp_filename, modelo, palavras_proibidas, motor):
                 yield chunk
                 
         finally:

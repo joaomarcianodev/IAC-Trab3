@@ -3,7 +3,7 @@
 {% block content %}
 <div class="main-container">
     <div class="text-center mb-4">
-        <h2>Detector de Ofensas ao Vivo</h2>
+        <h2>Detector de Ofensas</h2>
         <p class="text-muted">Analise áudios com Whisper + BERT/Llama</p>
     </div>
 
@@ -40,7 +40,7 @@
 
                     <div class="col-12">
                         <label class="form-label fw-bold">3. Palavras Proibidas</label>
-                        <textarea id="badWordsInput" class="form-control" rows="4" placeholder="Ex: idiota, feio, palavra3..."></textarea>
+                        <textarea id="badWordsInput" class="form-control" rows="4" placeholder="Ex: idiota, feio..."></textarea>
                         <div class="form-text">Separe as palavras por vírgula.</div>
                     </div>
                 </div>
@@ -49,7 +49,7 @@
     </div>
 
     <div class="d-grid gap-2 mt-4">
-        <button id="btnProcessar" class="btn btn-primary btn-lg" onclick="iniciarAnalise()">INICIAR ANÁLISE AO VIVO</button>
+        <button id="btnProcessar" class="btn btn-primary btn-lg" onclick="iniciarAnalise()">INICIAR ANÁLISE</button>
         <button id="btnCancelar" class="btn btn-danger btn-lg" onclick="cancelarRequisicao()" style="display:none;">CANCELAR</button>
     </div>
 

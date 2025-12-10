@@ -74,7 +74,7 @@ def carregar_bert_dinamico():
 
 import numpy as np
 
-def analisar_com_bert(texto, estrategia='completa'):
+def analisar_com_bert(texto):
     """
     Realiza a análise usando BERT (Sentimento adaptado para Toxicidade).
     Configuração: REGUA NEUTRA (0.5)
@@ -195,7 +195,7 @@ def analisar_com_ollama(texto):
 # PIPELINE PRINCIPAL (STREAMING)
 # ==============================================================================
 
-def processar_audio_stream(caminho_arquivo, modelo_whisper_nome, palavras_input, motor_analise, estrategia_bert):
+def processar_audio_stream(caminho_arquivo, modelo_whisper_nome, palavras_input, motor_analise):
     """
     Pipeline principal executado como um Gerador (Generator).
     
@@ -208,7 +208,6 @@ def processar_audio_stream(caminho_arquivo, modelo_whisper_nome, palavras_input,
         modelo_whisper_nome (str): 'tiny', 'base', 'small', 'medium', 'large'.
         palavras_input (str): String com palavras proibidas separadas por vírgula.
         motor_analise (str): 'bert' ou 'ollama'.
-        estrategia_bert (str): Configuração específica caso o motor seja BERT.
     """
     logs_acumulados = []
     tempo_inicio = time.time()
@@ -260,9 +259,9 @@ def processar_audio_stream(caminho_arquivo, modelo_whisper_nome, palavras_input,
             analise_res = analisar_com_ollama(texto)
             nome_modelo_final = "Llama 3.2 (Contextual)"
         else:
-            yield enviar_log(f"Processando BERT ({estrategia_bert})...")
-            analise_res = analisar_com_bert(texto, estrategia_bert)
-            nome_modelo_final = f"BERT ({estrategia_bert.capitalize()})"
+            yield enviar_log(f"Processando BERT...")
+            analise_res = analisar_com_bert(texto)
+            nome_modelo_final = f"BERT"
 
         tempo_analise = time.time() - start_analise
         yield enviar_log(f"Análise concluída em {tempo_analise:.2f}s.")
